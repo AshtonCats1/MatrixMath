@@ -104,14 +104,27 @@ def dot_product(a, b, n):
     return temp
     #Your code here
 
-def mat_mult(a,b,c):
-    for i in range (n):
-        for j in range (n):
+def mat_mult(a, b):
+    #gets dimensions of rows and collums in a and b and see if rows_b is equal because if it isnt you cant multiply matrices
+    rows_a = len(a)           # Number of rows in a
+    cols_a = len(a[0])        # Number of columns in a
+    rows_b = len(b)           # Number of rows in b
+    cols_b = len(b[0])        # Number of columns in b
+
+    if cols_a != cols_b:
+        print("matrices cannot be multiplied")
+        return None
+    
+    # Result will be rows_a × cols_b
+    c = np.zeros((rows_a, cols_b))
+    
+    for i in range(rows_a):
+        for j in range(cols_b):
             temp = 0.0
-            for k in range (n):
+            for k in range(cols_a):
                 temp += a[i][k] * b[k][j]
             c[i][j] = temp
-    return (c)
+    return c
 
 #running addition of vectors
 result = matrix[0]
@@ -138,6 +151,11 @@ if len(matrix) == 2:
     print("dot product is", result)
 else:
     print("cannot do dot product of more than 2 vectors")
+#running matrix multiplcation
+result = matrices[0]
+for i in range(1, len(matrices)):
+    result = mat_mult(result, matrices[i])
+print("multiplying all matrices =", result)
 
 #Tests
 #print(add(vector1, vector2, 3))
