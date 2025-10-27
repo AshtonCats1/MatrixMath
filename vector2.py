@@ -34,19 +34,9 @@ for s in filelist:
             current_matrix.append(float_array)
 
         matrices.append(current_matrix)
-            
 
-        
-    #turn the string into floats using float()
-print(matrices[0])
-vector1 = matrix[0]
-vector2 = matrix[1]
-A = [[3,2],[4,5]]
-b = [1,2]
 n = len(matrix[0])
-c = np.eye(n)
-d = np.eye (n)
-e = np.zeros((n,n))
+
 #A is our matrix input and B is the solutions. So for 1x + 2y = 3, A is 1,2 and B is 3. B is in the format of a vector so b[1] will be the first solution etc.
 def solve_system2(A,b):
     num_rows = len(matrix)
@@ -93,7 +83,6 @@ def scalar_product(scalar, vector, n):
     for i in range (n):
         c[i] = scalar * vector[i]
     return c
-    #Your code here
     
     
 def dot_product(a, b, n):
@@ -102,16 +91,15 @@ def dot_product(a, b, n):
     for i in range (n):
         temp += a[i] * b[i]
     return temp
-    #Your code here
 
 def mat_mult(a, b):
-    #gets dimensions of rows and collums in a and b and see if rows_b is equal because if it isnt you cant multiply matrices
+    #gets dimensions of rows and collums in a and b
     rows_a = len(a)           # Number of rows in a
     cols_a = len(a[0])        # Number of columns in a
     rows_b = len(b)           # Number of rows in b
     cols_b = len(b[0])        # Number of columns in b
-
-    if cols_a != cols_b:
+    #see if cols_a is equal to rows_b because if it isnt you cant multiply matrices
+    if cols_a != rows_b:
         print("matrices cannot be multiplied")
         return None
     
@@ -124,6 +112,42 @@ def mat_mult(a, b):
             for k in range(cols_a):
                 temp += a[i][k] * b[k][j]
             c[i][j] = temp
+    return c
+
+def mat_add(a, b):
+    #gets dimensions of rows and collums in a and b and see if rows_b is equal because if it isnt you cant multiply matrices
+    rows_a = len(a)           # Number of rows in a
+    cols_a = len(a[0])        # Number of columns in a
+    rows_b = len(b)           # Number of rows in b
+    cols_b = len(b[0])        # Number of columns in b
+
+    if rows_a != rows_b or cols_a != cols_b:
+        print("matrices cannot be added")
+        return None
+    
+    c = np.zeros((rows_a, cols_b))
+    
+    for i in range(rows_a):
+        for j in range(cols_a):
+            c[i][j] = a[i][j] + b[i][j]
+    return c
+
+def mat_subtract(a, b):
+    #gets dimensions of rows and collums in a and b and see if rows_b is equal because if it isnt you cant multiply matrices
+    rows_a = len(a)           # Number of rows in a
+    cols_a = len(a[0])        # Number of columns in a
+    rows_b = len(b)           # Number of rows in b
+    cols_b = len(b[0])        # Number of columns in b
+
+    if rows_a != rows_b or cols_a != cols_b:
+        print("matrices cannot be subtracted")
+        return None
+    
+    c = np.zeros((rows_a, cols_b))
+    
+    for i in range(rows_a):
+        for j in range(cols_a):
+            c[i][j] = a[i][j] - b[i][j]
     return c
 
 #running addition of vectors
@@ -156,6 +180,16 @@ result = matrices[0]
 for i in range(1, len(matrices)):
     result = mat_mult(result, matrices[i])
 print("multiplying all matrices =", result)
+
+result = matrices[0]
+for i in range(1, len(matrices)):
+    result = mat_add(result, matrices[i])
+print("adding all matrices =", result)
+
+result = matrices[0]
+for i in range(1, len(matrices)):
+    result = mat_subtract(result, matrices[i])
+print("subtracting all matrices =", result)
 
 #Tests
 #print(add(vector1, vector2, 3))
