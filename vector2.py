@@ -36,15 +36,15 @@ for s in filelist:
 
         matrices.append(current_matrix)
     elif label == "system":
-        rows_system = data.split(";")
+        rows_system = data.split(";") #splits by rows
         A_matrix = []
         b_vector = []
         for row_string in rows_system:
-            parts = row_string.split("=")
+            parts = row_string.split("=") #splitting by equals sign to get the variables and solutions
             variables = parts[0] #this is for storing the like 3x +2y part
             solution = parts[1] #this is for storing the = 5 part
 
-            variables_values = variables.split(",")
+            variables_values = variables.split(",") #splits by collums (you know the drill by now this is like the 4th comment ive made on the same line of code)
             float_array = np.zeros(len(variables_values))
             for i in range (len(variables_values)):
                 float_array[i] = float(variables_values[i])
@@ -71,9 +71,26 @@ def solve_system2(A,b):
             for k in range(num_rows):
                 if k != i:
                     augemented [k] -= augemented[k][i] * augemented[i]
-    return(augemented)                
-#solve_system2(A,b)
+    return(augemented)
+                
+def mat_determ(a):
+    rows = len(a) #finding the lengths of rows and collums so we can check how big they are and if they are square matrices
+    cols = len(a[0])
 
+    if rows != cols:
+        print("Can only find determints that are square")
+        return None
+    
+    if rows != 2 and rows != 3:
+        print("Can only find determints that are 2x2 or 3x3")
+        return None
+    if rows == 2:
+        det = a[0][0] * a[1][1] - a[0][1]*a[1][0]
+        return det
+    if rows == 3:
+        det = a[0][0]*(a[1][1]*a[2][2]-a[1][2]*a[2][1])-a[1][0]*(a[0][1]*a[2][2]-a[0][2]*a[2][1])+a[2][0]*(a[0][1]*a[1][2]-a[0][2]*a[1][1]) #looks like a lot of code but its just doing normal determint stuff (a1* (b2*c3 etc)), nothing fancy
+        return det
+    
 def add(a, b, n):
     #Adds vectors a and b, which are both of length n
     c = np.zeros(n)
@@ -210,22 +227,22 @@ result = matrices[0]
 for i in range(1, len(matrices)):
     result = mat_mult(result, matrices[i])
 print("multiplying all matrices =", result)
-
+#running matrix addition
 result = matrices[0]
 for i in range(1, len(matrices)):
     result = mat_add(result, matrices[i])
 print("adding all matrices =", result)
-
+#running matrix subtraction
 result = matrices[0]
 for i in range(1, len(matrices)):
     result = mat_subtract(result, matrices[i])
 print("subtracting all matrices =", result)
-
+#running multiplying a matrix by a scalar
 result = matrices[0]
 for i in range(len(matrices)):
     result = mat_mult_scalar(matrices[i], scalars[0])
     print("multipying matrix", [i], "by", scalars[0],"=", result)
-
+#running solve system
 for i in range(len(systems)):
     A_matrix, b_vector = systems[i]
     result = solve_system2(A_matrix,b_vector)
@@ -234,22 +251,7 @@ for i in range(len(systems)):
     for row in result:
         solutions.append(row[-1])
     print("Solution for system", [i], "=", solutions)
-#Tests
-#print(add(vector1, vector2, 3))
-#print(subtract(vector1, vector2, 3))
-#print(scalar_product(5, vector1, 3))
-#print(dot_product(vector1, vector2, 3))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#running finding determinits
+for i in range(len(matrices)):
+    det = mat_determ(matrices[i])
+    print("the determinent of matrix", [i], "=", det)
