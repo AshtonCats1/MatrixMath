@@ -10,6 +10,7 @@ f.close()
 matrix = []
 scalars = []
 matrices = []
+systems = []
 for s in filelist:
     parts = s.split(":")
     label = parts[0]
@@ -27,20 +28,38 @@ for s in filelist:
         rows = data.split(";") #splits matrix into rows (vectors)
         current_matrix = []
         for row_string in rows:
-            row_values = row_string.split(",")
+            row_values = row_string.split(",") #this will split by collumns
             float_array = np.zeros(len(row_values))
             for i in range (len(row_values)):
                 float_array[i] = float(row_values[i])
             current_matrix.append(float_array)
 
         matrices.append(current_matrix)
+    elif label == "system":
+        rows_system = data.split(";")
+        A_matrix = []
+        b_vector = []
+        for row_string in rows_system:
+            parts = row_string.split("=")
+            variables = parts[0] #this is for storing the like 3x +2y part
+            solution = parts[1] #this is for storing the = 5 part
+
+            variables_values = variables.split(",")
+            float_array = np.zeros(len(variables_values))
+            for i in range (len(variables_values)):
+                float_array[i] = float(variables_values[i])
+            A_matrix.append(float_array)
+
+            b_vector.append(float(solution))
+        systems.append((A_matrix, b_vector))
+
 
 n = len(matrix[0])
 
 #A is our matrix input and B is the solutions. So for 1x + 2y = 3, A is 1,2 and B is 3. B is in the format of a vector so b[1] will be the first solution etc.
 def solve_system2(A,b):
-    num_rows = len(matrix)
-    num_cols = n
+    num_rows = len(A)
+    num_cols = len(A[0])
     augemented = np.zeros((num_rows,num_cols+1))
     for i in range (num_rows):
         for j in range(num_cols):
@@ -150,6 +169,17 @@ def mat_subtract(a, b):
             c[i][j] = a[i][j] - b[i][j]
     return c
 
+def mat_mult_scalar(a, b):
+    #gets dimensions of rows and collums in a 
+    rows_a = len(a)           # Number of rows in a
+    cols_a = len(a[0])        # Number of columns in a
+
+    c = np.zeros((rows_a, cols_a))
+    
+    for i in range(rows_a):
+        for j in range(cols_a):
+            c[i][j] = a[i][j] * b
+    return c
 #running addition of vectors
 result = matrix[0]
 for i in range(1, len(matrix)):
@@ -191,6 +221,19 @@ for i in range(1, len(matrices)):
     result = mat_subtract(result, matrices[i])
 print("subtracting all matrices =", result)
 
+result = matrices[0]
+for i in range(len(matrices)):
+    result = mat_mult_scalar(matrices[i], scalars[0])
+    print("multipying matrix", [i], "by", scalars[0],"=", result)
+
+for i in range(len(systems)):
+    A_matrix, b_vector = systems[i]
+    result = solve_system2(A_matrix,b_vector)
+    
+    solutions = []
+    for row in result:
+        solutions.append(row[-1])
+    print("Solution for system", [i], "=", solutions)
 #Tests
 #print(add(vector1, vector2, 3))
 #print(subtract(vector1, vector2, 3))
